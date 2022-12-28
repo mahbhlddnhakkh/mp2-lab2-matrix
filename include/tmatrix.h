@@ -20,10 +20,11 @@ const size_t MAX_MATRIX_SIZE = 10000;
 template<typename T>
 class TDynamicMatrix : private TDynamicVector<TDynamicVector<T>>
 {
+protected:
   using TDynamicVector<TDynamicVector<T>>::pMem;
   using TDynamicVector<TDynamicVector<T>>::sz;
 public:
-  TDynamicMatrix(size_t s = 1);
+  TDynamicMatrix(size_t s = 1, const T& val = T());
 
   using TDynamicVector<TDynamicVector<T>>::size;
   using TDynamicVector<TDynamicVector<T>>::operator[];
@@ -42,6 +43,7 @@ public:
   // матрично-скалярные операции
   TDynamicMatrix operator*(const T& val);
   TDynamicMatrix operator/(const T& val);
+  TDynamicMatrix operator-(void);
 
   // матрично-векторные операции
   TDynamicVector<T> operator*(const TDynamicVector<T>& v);
@@ -68,12 +70,12 @@ public:
 };
 
 template<typename T>
-inline TDynamicMatrix<T>::TDynamicMatrix(size_t s) : TDynamicVector<TDynamicVector<T>>(s)
+inline TDynamicMatrix<T>::TDynamicMatrix(size_t s, const T& val) : TDynamicVector<TDynamicVector<T>>(s)
 {
   if (sz > MAX_MATRIX_SIZE)
     throw out_of_range("Matrix size should be less than MAX_MATRIX_SIZE");
   for (size_t i = 0; i < sz; i++)
-    pMem[i] = TDynamicVector<T>(sz);
+    pMem[i] = TDynamicVector<T>(sz, val);
 }
 
 template<typename T>
@@ -192,6 +194,15 @@ inline TDynamicMatrix<T> TDynamicMatrix<T>::operator/(const T& val)
   TDynamicMatrix<T> tmp(sz);
   for (size_t i = 0; i < sz; i++)
     tmp[i] = this->operator[](i) / val;
+  return tmp;
+}
+
+template<typename T>
+inline TDynamicMatrix<T> TDynamicMatrix<T>::operator-(void)
+{
+  TDynamicMatrix<T> tmp(sz);
+  for (size_t i = 0; i < sz; i++)
+    tmp[i] = -(this->operator[](i));
   return tmp;
 }
 

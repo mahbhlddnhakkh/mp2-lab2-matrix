@@ -351,3 +351,8 @@ MigrationBackup/
 
 # For /build folder
 /build/*
+
+# I hate my life
+/A-Trash/*
+/include/TBandMatrix.h
+/tests/test_TBandMatrix.cpp

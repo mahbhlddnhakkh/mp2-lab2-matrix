@@ -22,9 +22,9 @@ protected:
   size_t sz;
   T* pMem;
 public:
-  TDynamicVector(size_t size = 1);
-  TDynamicVector(size_t size, T val);
-  TDynamicVector(T* arr, size_t s);
+  //TDynamicVector(size_t size = 1);
+  TDynamicVector(size_t size = 1, const T& val = T());
+  TDynamicVector(const T* arr, size_t s);
   TDynamicVector(const TDynamicVector& v);
   TDynamicVector(TDynamicVector&& v) noexcept;
   ~TDynamicVector();
@@ -49,11 +49,11 @@ public:
   TDynamicVector operator-(const T& val);
   TDynamicVector operator*(const T& val);
   TDynamicVector operator/(const T& val);
+  TDynamicVector operator-(void);
 
   // векторные операции
   TDynamicVector operator+(const TDynamicVector& v);
   TDynamicVector operator-(const TDynamicVector& v);
-  TDynamicVector operator-(void);
   T operator*(const TDynamicVector& v);
 
   friend void swap(TDynamicVector& lhs, TDynamicVector& rhs) noexcept
@@ -72,26 +72,27 @@ public:
   friend ostream& operator<<(ostream& ostr, const TDynamicVector& v)
   {
     for (size_t i = 0; i < v.sz; i++)
-      ostr << v.pMem[i] << ' '; // требуется оператор<< для типа T
+      //ostr << v.pMem[i] << ' '; // требуется оператор<< для типа T
+      ostr << v.pMem[i] << '\t'; // требуется оператор<< для типа T
     return ostr;
   }
 };
 
-template<typename T>
-inline TDynamicVector<T>::TDynamicVector(size_t size) : sz(size)
-{
-  if (sz == 0)
-    throw out_of_range("Vector size should be greater than zero");
-  if (sz > MAX_VECTOR_SIZE)
-    throw out_of_range("Vector size should be less than MAX_VECTOR_SIZE");
-  pMem = new T[sz]();// {}; // У типа T д.б. констуктор по умолчанию
-}
+//template<typename T>
+//inline TDynamicVector<T>::TDynamicVector(size_t size) : sz(size)
+//{
+//  if (sz == 0)
+//    throw out_of_range("Vector size should be greater than zero");
+//  if (sz > MAX_VECTOR_SIZE)
+//    throw out_of_range("Vector size should be less than MAX_VECTOR_SIZE");
+//  pMem = new T[sz]();// {}; // У типа T д.б. констуктор по умолчанию
+//}
 
 template<typename T>
-inline TDynamicVector<T>::TDynamicVector(size_t size, T val)
+inline TDynamicVector<T>::TDynamicVector(size_t size, const T& val) : sz(size)
 {
   if (sz == 0)
-    throw out_of_range("Vector size should be greater than zero");
+    throw out_of_range("Size should be greater than zero");
   if (sz > MAX_VECTOR_SIZE)
     throw out_of_range("Vector size should be less than MAX_VECTOR_SIZE");
   pMem = new T[sz];
@@ -100,7 +101,7 @@ inline TDynamicVector<T>::TDynamicVector(size_t size, T val)
 }
 
 template<typename T>
-inline TDynamicVector<T>::TDynamicVector(T* arr, size_t s) : sz(s)
+inline TDynamicVector<T>::TDynamicVector(const T* arr, size_t s) : sz(s)
 {
   assert(arr != nullptr && "TDynamicVector ctor requires non-nullptr arg");
   if (sz > MAX_VECTOR_SIZE)
@@ -265,9 +266,8 @@ inline TDynamicVector<T> TDynamicVector<T>::operator-(const TDynamicVector& v)
 }
 
 template<typename T>
-inline TDynamicVector<T> TDynamicVector<T>::operator-(void)
+inline TDynamicVector<T> TDynamicVector<T>::operator-()
 {
-  if (sz != v.sz) throw "Sizes are not equal";
   TDynamicVector<T> tmp(sz);
   for (size_t i = 0; i < sz; i++)
     tmp[i] = -(this->operator[](i));
